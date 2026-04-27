@@ -1,0 +1,113 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 224 46% 97%;
+    --foreground: 225 34% 13%;
+    --card: 0 0% 100%;
+    --card-foreground: 225 34% 13%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 225 34% 13%;
+    --primary: 235 72% 55%;
+    --primary-foreground: 230 100% 99%;
+    --secondary: 214 84% 94%;
+    --secondary-foreground: 225 38% 21%;
+    --muted: 224 33% 92%;
+    --muted-foreground: 225 14% 43%;
+    --accent: 270 78% 58%;
+    --accent-foreground: 270 100% 99%;
+    --destructive: 0 72% 52%;
+    --destructive-foreground: 0 0% 100%;
+    --success: 159 66% 38%;
+    --success-foreground: 158 100% 98%;
+    --warning: 38 91% 52%;
+    --warning-foreground: 32 96% 11%;
+    --info: 199 88% 48%;
+    --info-foreground: 198 100% 98%;
+    --border: 224 28% 86%;
+    --input: 224 28% 86%;
+    --ring: 235 72% 55%;
+    --surface: 226 54% 99%;
+    --surface-strong: 230 58% 94%;
+    --trace: 252 84% 64%;
+    --trace-soft: 252 90% 94%;
+    --radius: 0.8rem;
+    --gradient-app: linear-gradient(135deg, hsl(224 46% 97%) 0%, hsl(236 80% 98%) 42%, hsl(270 86% 97%) 100%);
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)));
+    --gradient-panel: linear-gradient(180deg, hsl(var(--card) / 0.96), hsl(var(--surface) / 0.9));
+    --shadow-soft: 0 16px 42px -24px hsl(230 44% 26% / 0.34);
+    --shadow-glow: 0 20px 60px -30px hsl(var(--primary) / 0.65);
+    --sidebar-background: 229 47% 14%;
+    --sidebar-foreground: 226 70% 95%;
+    --sidebar-primary: 235 72% 62%;
+    --sidebar-primary-foreground: 230 100% 99%;
+    --sidebar-accent: 229 40% 21%;
+    --sidebar-accent-foreground: 226 70% 98%;
+    --sidebar-border: 229 34% 24%;
+    --sidebar-ring: 235 72% 62%;
+  }
+
+  .dark {
+    --background: 229 45% 9%;
+    --foreground: 226 70% 96%;
+    --card: 229 40% 13%;
+    --card-foreground: 226 70% 96%;
+    --popover: 229 40% 13%;
+    --popover-foreground: 226 70% 96%;
+    --primary: 231 91% 70%;
+    --primary-foreground: 229 45% 9%;
+    --secondary: 229 34% 20%;
+    --secondary-foreground: 226 70% 96%;
+    --muted: 229 31% 19%;
+    --muted-foreground: 225 20% 70%;
+    --accent: 276 83% 72%;
+    --accent-foreground: 229 45% 9%;
+    --destructive: 0 77% 61%;
+    --destructive-foreground: 0 0% 100%;
+    --success: 159 72% 45%;
+    --success-foreground: 158 100% 98%;
+    --warning: 41 92% 58%;
+    --warning-foreground: 32 96% 11%;
+    --info: 199 91% 61%;
+    --info-foreground: 198 100% 98%;
+    --border: 229 28% 25%;
+    --input: 229 28% 25%;
+    --ring: 231 91% 70%;
+    --surface: 229 40% 12%;
+    --surface-strong: 229 36% 18%;
+    --trace: 252 92% 75%;
+    --trace-soft: 252 42% 22%;
+    --gradient-app: linear-gradient(135deg, hsl(229 45% 9%) 0%, hsl(232 44% 11%) 48%, hsl(268 42% 13%) 100%);
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)));
+    --gradient-panel: linear-gradient(180deg, hsl(var(--card) / 0.94), hsl(var(--surface) / 0.88));
+    --shadow-soft: 0 18px 54px -28px hsl(229 80% 2% / 0.72);
+    --shadow-glow: 0 24px 74px -38px hsl(var(--primary) / 0.75);
+    --sidebar-background: 229 48% 8%;
+    --sidebar-foreground: 226 70% 95%;
+    --sidebar-primary: 231 91% 70%;
+    --sidebar-primary-foreground: 229 45% 9%;
+    --sidebar-accent: 229 36% 16%;
+    --sidebar-accent-foreground: 226 70% 98%;
+    --sidebar-border: 229 31% 19%;
+    --sidebar-ring: 231 91% 70%;
+  }
+
+  * { @apply border-border; }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    background: var(--gradient-app);
+    font-family: "Manrope", "Aptos", system-ui, sans-serif;
+    letter-spacing: 0;
+  }
+
+  h1, h2, h3 { font-family: "Space Grotesk", "Manrope", system-ui, sans-serif; letter-spacing: 0; }
+}
+
+@layer utilities {
+  .panel { background: var(--gradient-panel); box-shadow: var(--shadow-soft); }
+  .text-gradient { background: var(--gradient-primary); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .reasoning-grid { background-image: linear-gradient(hsl(var(--border) / .45) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--border) / .45) 1px, transparent 1px); background-size: 34px 34px; }
+}
