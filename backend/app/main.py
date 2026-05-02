@@ -24,6 +24,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Import and register routers
+from app.routers import connection
+app.include_router(connection.router)
+
 # Health check endpoint
 @app.get("/health")
 async def health_check():
