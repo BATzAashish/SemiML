@@ -25,8 +25,10 @@ app.add_middleware(
 )
 
 # Import and register routers
-from app.routers import connection
+from app.routers import connection, data_processing
+
 app.include_router(connection.router)
+app.include_router(data_processing.router)
 
 # Health check endpoint
 @app.get("/health")
