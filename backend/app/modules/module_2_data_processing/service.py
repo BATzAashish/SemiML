@@ -1,5 +1,6 @@
 """
-Data Processing Service - Handles dataset upload, validation, and storage
+Module 2: Data Processing Service
+Handles dataset upload, validation, and storage
 """
 import os
 import uuid

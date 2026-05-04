@@ -25,11 +25,13 @@ app.add_middleware(
 )
 
 # Import and register routers
-from app.routers import connection, data_processing, meta_features
+from app.routers import connection
+from app.modules.module_2_data_processing.router import router as m2_router
+from app.modules.module_3_meta_features.router import router as m3_router
 
 app.include_router(connection.router)
-app.include_router(data_processing.router)
-app.include_router(meta_features.router)
+app.include_router(m2_router)
+app.include_router(m3_router)
 
 # Health check endpoint
 @app.get("/health")
