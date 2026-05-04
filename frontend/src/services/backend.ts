@@ -188,6 +188,154 @@ export const backendService = {
       throw error;
     }
   },
+
+  /**
+   * Extract meta-features from a dataset
+   * Module 3
+   */
+  async extractMetaFeatures(datasetId: string): Promise<any> {
+    try {
+      const response = await fetch(
+        `${BACKEND_URL}/api/extract-meta-features/${datasetId}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log("Meta-features extracted:", data);
+      return data;
+    } catch (error) {
+      console.error("Failed to extract meta-features:", error);
+      throw error;
+    }
+  },
+
+  /**
+   * Get meta-features for a dataset
+   * Module 3
+   */
+  async getMetaFeatures(datasetId: string): Promise<any> {
+    try {
+      const response = await fetch(
+        `${BACKEND_URL}/api/meta-features/${datasetId}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log("Meta-features:", data);
+      return data;
+    } catch (error) {
+      console.error("Failed to fetch meta-features:", error);
+      throw error;
+    }
+  },
+
+  /**
+   * Get data preview for a dataset
+   * Module 3
+   */
+  async getDataPreview(datasetId: string, rows: number = 10): Promise<any> {
+    try {
+      const response = await fetch(
+        `${BACKEND_URL}/api/data-preview/${datasetId}?rows=${rows}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log("Data preview:", data);
+      return data;
+    } catch (error) {
+      console.error("Failed to fetch data preview:", error);
+      throw error;
+    }
+  },
+
+  /**
+   * Get comprehensive dataset summary
+   * Module 3
+   */
+  async getDatasetSummary(datasetId: string): Promise<any> {
+    try {
+      const response = await fetch(
+        `${BACKEND_URL}/api/dataset-summary/${datasetId}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log("Dataset summary:", data);
+      return data;
+    } catch (error) {
+      console.error("Failed to fetch dataset summary:", error);
+      throw error;
+    }
+  },
+
+  /**
+   * Compare two datasets
+   * Module 3
+   */
+  async compareDatasets(
+    datasetId1: string,
+    datasetId2: string
+  ): Promise<any> {
+    try {
+      const response = await fetch(
+        `${BACKEND_URL}/api/compare-datasets?dataset_1_id=${datasetId1}&dataset_2_id=${datasetId2}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log("Datasets compared:", data);
+      return data;
+    } catch (error) {
+      console.error("Failed to compare datasets:", error);
+      throw error;
+    }
+  },
 };
 
 export default backendService;

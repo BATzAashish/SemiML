@@ -57,12 +57,25 @@ async def get_system_info():
             },
             "module_2": {
                 "name": "Data Processing Layer",
-                "status": "pending",
-                "endpoints": []
+                "status": "active",
+                "endpoints": [
+                    "/api/upload-dataset",
+                    "/api/dataset/{dataset_id}",
+                    "/api/datasets",
+                    "/api/dataset/{dataset_id} (DELETE)"
+                ]
             },
-            "module_3_to_11": {
-                "status": "pending"
-            }
+            "module_3": {
+                "name": "Meta-Features Extraction",
+                "status": "active",
+                "endpoints": [
+                    "/api/extract-meta-features/{dataset_id}",
+                    "/api/meta-features/{dataset_id}",
+                    "/api/data-preview/{dataset_id}",
+                    "/api/dataset-summary/{dataset_id}",
+                    "/api/compare-datasets"
+                ]
+            },
         },
         "tech_stack": [
             "FastAPI",
