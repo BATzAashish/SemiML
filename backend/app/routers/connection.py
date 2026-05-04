@@ -88,6 +88,17 @@ async def get_system_info():
                     "/api/experience-statistics"
                 ]
             },
+            "module_5": {
+                "name": "Decision Engine",
+                "status": "active",
+                "endpoints": [
+                    "/api/decide-pipeline",
+                    "/api/detect-problem-type",
+                    "/api/analyze-characteristics",
+                    "/api/get-pipeline-recommendations",
+                    "/api/decision-history"
+                ]
+            },
         },
         "tech_stack": [
             "FastAPI",
