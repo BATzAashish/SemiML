@@ -76,6 +76,18 @@ async def get_system_info():
                     "/api/compare-datasets"
                 ]
             },
+            "module_4": {
+                "name": "Experience Retrieval",
+                "status": "active",
+                "endpoints": [
+                    "/api/store-experience",
+                    "/api/find-similar-datasets",
+                    "/api/get-best-practices",
+                    "/api/get-best-models",
+                    "/api/search-experiences",
+                    "/api/experience-statistics"
+                ]
+            },
         },
         "tech_stack": [
             "FastAPI",

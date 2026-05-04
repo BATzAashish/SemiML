@@ -28,10 +28,12 @@ app.add_middleware(
 from app.routers import connection
 from app.modules.module_2_data_processing.router import router as m2_router
 from app.modules.module_3_meta_features.router import router as m3_router
+from app.modules.module_4_experience_retrieval.router import router as m4_router
 
 app.include_router(connection.router)
 app.include_router(m2_router)
 app.include_router(m3_router)
+app.include_router(m4_router)
 
 # Health check endpoint
 @app.get("/health")
