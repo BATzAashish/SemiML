@@ -99,6 +99,52 @@ async def get_system_info():
                     "/api/decision-history"
                 ]
             },
+            "module_6": {
+                "name": "Pipeline Builder",
+                "status": "active",
+                "endpoints": [
+                    "/api/build-pipeline"
+                ]
+            },
+            "module_7": {
+                "name": "Training & Optimization",
+                "status": "active",
+                "endpoints": [
+                    "/api/train-pipeline",
+                    "/api/training-runs"
+                ]
+            },
+            "module_8": {
+                "name": "Validation",
+                "status": "active",
+                "endpoints": [
+                    "/api/validate-model",
+                    "/api/validation-runs"
+                ]
+            },
+            "module_9": {
+                "name": "Explainability",
+                "status": "active",
+                "endpoints": [
+                    "/api/explain-model",
+                    "/api/explanations"
+                ]
+            },
+            "module_10": {
+                "name": "Decision Trace",
+                "status": "active",
+                "endpoints": [
+                    "/api/decision-trace",
+                    "/api/decision-trace/{trace_id}"
+                ]
+            },
+            "module_11": {
+                "name": "Feedback & Learning",
+                "status": "active",
+                "endpoints": [
+                    "/api/feedback"
+                ]
+            },
         },
         "tech_stack": [
             "FastAPI",

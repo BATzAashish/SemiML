@@ -30,12 +30,24 @@ from app.modules.module_2_data_processing.router import router as m2_router
 from app.modules.module_3_meta_features.router import router as m3_router
 from app.modules.module_4_experience_retrieval.router import router as m4_router
 from app.modules.module_5_decision_engine.router import router as m5_router
+from app.modules.module_6_pipeline_builder.router import router as m6_router
+from app.modules.module_7_training_optimization.router import router as m7_router
+from app.modules.module_8_validation.router import router as m8_router
+from app.modules.module_9_explainability.router import router as m9_router
+from app.modules.module_10_decision_trace.router import router as m10_router
+from app.modules.module_11_feedback_learning.router import router as m11_router
 
 app.include_router(connection.router)
 app.include_router(m2_router)
 app.include_router(m3_router)
 app.include_router(m4_router)
 app.include_router(m5_router)
+app.include_router(m6_router)
+app.include_router(m7_router)
+app.include_router(m8_router)
+app.include_router(m9_router)
+app.include_router(m10_router)
+app.include_router(m11_router)
 
 # Health check endpoint
 @app.get("/health")
