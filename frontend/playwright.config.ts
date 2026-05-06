@@ -1,5 +1,9 @@
 import { defineConfig } from "@playwright/test";
 import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export default defineConfig({
   testDir: "./e2e",
@@ -19,7 +23,7 @@ export default defineConfig({
       cwd: __dirname,
     },
     {
-      command: "d:/Projects/SemiML/.venv/Scripts/python.exe -m uvicorn app.main:app --reload",
+      command: "python -m uvicorn app.main:app --reload --port 8000",
       url: "http://127.0.0.1:8000/health",
       reuseExistingServer: true,
       cwd: path.join(__dirname, "..", "backend"),

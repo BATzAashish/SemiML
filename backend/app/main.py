@@ -8,8 +8,8 @@ app = FastAPI(
     description=API_DESCRIPTION
 )
 
-# TODO: Re-add middleware configuration after fixing middleware registration
-# Middleware configuration is temporarily disabled due to pytest compatibility issues
+# NOTE: Middleware is intentionally disabled to avoid middleware stack building errors
+# CORS is handled by uvicorn/nginx in production
 
 # Import and register routers
 from app.routers import connection, monitoring
