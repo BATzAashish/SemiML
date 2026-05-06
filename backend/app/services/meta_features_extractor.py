@@ -35,6 +35,10 @@ class MetaFeaturesExtractor:
                 "data_quality": self._extract_data_quality_metrics(df),
                 "class_distribution": self._extract_class_distribution(df),
                 "feature_types": self._extract_feature_types(df),
+                "outlier_analysis": self.detect_outliers(df),
+                "entropy_analysis": self.calculate_entropy(df),
+                "correlation_analysis": self.calculate_correlation_strength(df),
+                "complexity_analysis": self.estimate_complexity(df),
             }
             
             logger.info(f"Meta-features extraction completed for {dataset_id}")
@@ -197,6 +201,124 @@ class MetaFeaturesExtractor:
         has_target = any(2 <= df[col].nunique() <= 100 for col in df.columns)
         
         return len(numeric_cols) > 0 and has_target
+
+    def detect_outliers(self, df: pd.DataFrame) -> Dict[str, Any]:
+        """
+        Detect outliers using IQR and Z-score methods
+        Returns outlier statistics for each numerical column
+        """
+        numeric_cols = df.select_dtypes(include=[np.number]).columns.tolist()
+        outlier_analysis = {}
+        
+        for col in numeric_cols:
+            # IQR method
+            Q1 = df[col].quantile(0.25)
+            Q3 = df[col].quantile(0.75)
+            IQR = Q3 - Q1
+            lower_bound = Q1 - 1.5 * IQR
+            upper_bound = Q3 + 1.5 * IQR
+            iqr_outliers = len(df[(df[col] < lower_bound) | (df[col] > upper_bound)])
+            
+            # Z-score method (|z| > 3)
+            z_scores = np.abs((df[col] - df[col].mean()) / df[col].std())
+            z_outliers = len(df[z_scores > 3])
+            
+            outlier_analysis[col] = {
+                "iqr_outliers": int(iqr_outliers),
+                "iqr_outlier_percentage": round((iqr_outliers / len(df)) * 100, 2),
+                "z_score_outliers": int(z_outliers),
+                "z_score_outlier_percentage": round((z_outliers / len(df)) * 100, 2),
+                "lower_bound_iqr": float(lower_bound),
+                "upper_bound_iqr": float(upper_bound),
+            }
+        
+        return {
+            "outlier_detection": outlier_analysis,
+            "columns_with_outliers": len([c for c, stats in outlier_analysis.items() if stats["iqr_outliers"] > 0]),
+            "total_outlier_rows": int(sum(stats["iqr_outliers"] for stats in outlier_analysis.values())),
+        }
+
+    def calculate_entropy(self, df: pd.DataFrame) -> Dict[str, float]:
+        """
+        Calculate Shannon entropy for each column
+        Measures the uncertainty/disorder in the data
+        """
+        entropy_values = {}
+        
+        for col in df.columns:
+            # Calculate probability distribution
+            value_counts = df[col].value_counts()
+            probabilities = value_counts / len(df)
+            
+            # Shannon entropy: -sum(p * log2(p))
+            entropy = -np.sum(probabilities * np.log2(probabilities + 1e-10))
+            entropy_values[col] = float(entropy)
+        
+        return {
+            "entropy_by_column": entropy_values,
+            "average_entropy": float(np.mean(list(entropy_values.values()))),
+            "max_entropy": float(max(entropy_values.values())),
+            "min_entropy": float(min(entropy_values.values())),
+        }
+
+    def calculate_correlation_strength(self, df: pd.DataFrame) -> Dict[str, Any]:
+        """
+        Calculate correlation strength and identify highly correlated features
+        """
+        numeric_cols = df.select_dtypes(include=[np.number]).columns.tolist()
+        
+        if len(numeric_cols) < 2:
+            return {"correlation_strength": "N/A", "highly_correlated_pairs": []}
+        
+        corr_matrix = df[numeric_cols].corr().abs()
+        
+        # Find highly correlated pairs (> 0.8)
+        highly_correlated = []
+        for i in range(len(corr_matrix.columns)):
+            for j in range(i+1, len(corr_matrix.columns)):
+                if corr_matrix.iloc[i, j] > 0.8:
+                    highly_correlated.append({
+                        "feature_1": corr_matrix.columns[i],
+                        "feature_2": corr_matrix.columns[j],
+                        "correlation": float(corr_matrix.iloc[i, j]),
+                    })
+        
+        return {
+            "highly_correlated_pairs": highly_correlated,
+            "multicollinearity_risk": len(highly_correlated) > 0,
+            "avg_abs_correlation": float(corr_matrix.values[np.triu_indices_from(corr_matrix.values, k=1)].mean()),
+        }
+
+    def estimate_complexity(self, df: pd.DataFrame) -> Dict[str, Any]:
+        """
+        Estimate dataset complexity based on various factors
+        """
+        numeric_cols = df.select_dtypes(include=[np.number]).columns.tolist()
+        categorical_cols = df.select_dtypes(include=['object']).columns.tolist()
+        
+        # Feature complexity
+        feature_complexity = len(df.columns) / (len(df) ** 0.5) if len(df) > 0 else 0
+        
+        # Sample complexity
+        sample_complexity = np.log2(len(df)) if len(df) > 1 else 1
+        
+        # Data imbalance (if applicable)
+        categorical_imbalance = 0
+        if categorical_cols:
+            for col in categorical_cols[:1]:  # Check first categorical
+                value_dist = df[col].value_counts()
+                if len(value_dist) > 1:
+                    categorical_imbalance = (value_dist.max() / value_dist.min()) if value_dist.min() > 0 else 0
+        
+        complexity_score = (feature_complexity * 0.3 + sample_complexity * 0.4 + categorical_imbalance * 0.3)
+        
+        return {
+            "feature_complexity": float(feature_complexity),
+            "sample_complexity": float(sample_complexity),
+            "categorical_imbalance_ratio": float(categorical_imbalance),
+            "overall_complexity_score": float(complexity_score),
+            "complexity_level": "high" if complexity_score > 2 else ("medium" if complexity_score > 1 else "low"),
+        }
 
     def compare_datasets(self, meta_features_1: Dict[str, Any], meta_features_2: Dict[str, Any]) -> Dict[str, Any]:
         """Compare meta-features of two datasets"""

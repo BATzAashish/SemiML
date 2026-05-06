@@ -9,8 +9,12 @@ from datetime import datetime
 from typing import Any, Dict, List, Optional
 
 import numpy as np
-import shap
 from joblib import load
+
+try:
+    import shap
+except ImportError:
+    shap = None
 
 from app.config import MODELS_DIR
 from app.logging_config import logger

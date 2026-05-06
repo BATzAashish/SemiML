@@ -1,0 +1,82 @@
+version: '3.8'
+
+services:
+  # Backend Service
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: semiml-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+      - ENVIRONMENT=production
+      - DATABASE_URL=sqlite:///./semiml.db
+      # Optional: Add LLM API keys
+      # - OPENAI_API_KEY=${OPENAI_API_KEY}
+      # - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      # - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+    volumes:
+      - backend_data:/app/uploads
+      - backend_logs:/app/logs
+      - backend_models:/app/models
+    networks:
+      - semiml_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  # Frontend Service
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: semiml-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - semiml_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    environment:
+      - BACKEND_URL=http://backend:8000
+
+  # Optional: Database Service (SQLite doesn't need separate service, but included for future migration)
+  # db:
+  #   image: postgres:15-alpine
+  #   container_name: semiml-db
+  #   environment:
+  #     - POSTGRES_DB=semiml
+  #     - POSTGRES_USER=semiml
+  #     - POSTGRES_PASSWORD=semiml_secure_password
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #   networks:
+  #     - semiml_network
+  #   restart: unless-stopped
+
+networks:
+  semiml_network:
+    driver: bridge
+
+volumes:
+  backend_data:
+    driver: local
+  backend_logs:
+    driver: local
+  backend_models:
+    driver: local
+  # postgres_data:
+  #   driver: local

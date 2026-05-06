@@ -51,17 +51,17 @@ export async function uploadDataset(payload) {
   if (useMock()) return mock({ ok: true, experimentId: "EXP-1048", received: { fileName: payload.file?.name, ...payload } }, 700);
   const formData = new FormData();
   Object.entries(payload).forEach(([key, value]) => value != null && formData.append(key, value));
-  const { data } = await client.post("/upload", formData);
+  const { data } = await client.post("/api/upload-dataset", formData);
   return data;
 }
-export const getDataProfile = async () => useMock() ? mock(mockDataProfile) : (await client.get("/data-profile")).data;
-export const getPipeline = async () => useMock() ? mock(mockPipeline) : (await client.get("/pipeline")).data;
-export const getDecisionTrace = async () => useMock() ? mock(mockTrace) : (await client.get("/decision-trace")).data;
-export const getEvaluation = async () => useMock() ? mock(mockEvaluation) : (await client.get("/evaluation")).data;
-export const getExplainability = async () => useMock() ? mock(mockExplainability) : (await client.get("/explainability")).data;
-export const getExperiments = async () => useMock() ? mock(mockExperiments) : (await client.get("/experiments")).data;
+export const getDataProfile = async () => useMock() ? mock(mockDataProfile) : (await client.get("/api/data-profile")).data;
+export const getPipeline = async () => useMock() ? mock(mockPipeline) : (await client.get("/api/pipeline")).data;
+export const getDecisionTrace = async () => useMock() ? mock(mockTrace) : (await client.get("/api/decision-trace")).data;
+export const getEvaluation = async () => useMock() ? mock(mockEvaluation) : (await client.get("/api/evaluation")).data;
+export const getExplainability = async () => useMock() ? mock(mockExplainability) : (await client.get("/api/explanations")).data;
+export const getExperiments = async () => useMock() ? mock(mockExperiments) : (await client.get("/api/search-experiences")).data;
 export async function sendChatMessage(message, history = []) {
   if (useMock()) return mock({ role: "assistant", content: `The recommendation is driven by traceable constraints: ${message.toLowerCase().includes("why") ? "recall priority, calibrated confidence, and SHAP-compatible model structure." : "I would re-profile the dataset, compare drift, and update the pipeline confidence before replacing the selected model."}` }, 650);
-  const { data } = await client.post("/chat", { message, history });
+  const { data } = await client.post("/api/chat", { message, history });
   return data;
 }

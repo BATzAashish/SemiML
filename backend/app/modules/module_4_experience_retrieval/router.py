@@ -3,10 +3,11 @@ Module 4: Experience Retrieval Router
 Provides endpoints for storing and retrieving ML pipeline experiences
 """
 from fastapi import APIRouter, HTTPException
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, List
 from pydantic import BaseModel
 
 from app.modules.module_4_experience_retrieval.service import experience_retriever
+from app.modules.module_4_experience_retrieval.knowledge_ingestion import get_knowledge_base
 from app.logging_config import logger
 
 router = APIRouter(prefix="/api", tags=["Experience Retrieval"])
@@ -225,4 +226,152 @@ async def get_experience_statistics() -> Dict[str, Any]:
         
     except Exception as e:
         logger.error(f"Error computing statistics: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# ============================================================================
+# Knowledge Retrieval Endpoints (LangChain + FAISS)
+# ============================================================================
+
+class KnowledgeQueryRequest(BaseModel):
+    """Request model for knowledge retrieval"""
+    query: str
+    top_k: int = 5
+
+
+@router.post("/retrieve-knowledge")
+async def retrieve_knowledge(request: KnowledgeQueryRequest) -> Dict[str, Any]:
+    """
+    Retrieve relevant knowledge using semantic search
+    
+    Uses LangChain + FAISS to find relevant ML best practices and past experiences
+    based on semantic similarity to the query.
+    
+    Args:
+        request: Query string and number of results to return
+        
+    Returns:
+        List of relevant knowledge items with similarity scores
+    """
+    try:
+        logger.info(f"Retrieving knowledge for query: {request.query}")
+        
+        kb = get_knowledge_base()
+        if not kb:
+            return {
+                "status": "success",
+                "message": "Knowledge base not available",
+                "results": [],
+            }
+        
+        results = kb.retrieve(request.query, top_k=request.top_k)
+        
+        return {
+            "status": "success",
+            "count": len(results),
+            "results": results,
+            "query": request.query,
+        }
+        
+    except Exception as e:
+        logger.error(f"Error retrieving knowledge: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/search-similar-approaches")
+async def search_similar_approaches(request: KnowledgeQueryRequest) -> Dict[str, Any]:
+    """
+    Search for similar ML approaches and best practices
+    
+    Args:
+        request: Problem description or query
+        
+    Returns:
+        Similar approaches ranked by relevance
+    """
+    try:
+        logger.info(f"Searching similar approaches for: {request.query}")
+        
+        kb = get_knowledge_base()
+        if not kb:
+            return {
+                "status": "success",
+                "message": "Knowledge base not available",
+                "approaches": [],
+            }
+        
+        approaches = kb.search_similar_approaches(request.query, top_k=request.top_k)
+        
+        return {
+            "status": "success",
+            "count": len(approaches),
+            "approaches": approaches,
+        }
+        
+    except Exception as e:
+        logger.error(f"Error searching approaches: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/add-knowledge")
+async def add_knowledge_documents(documents: List[Dict[str, Any]]) -> Dict[str, Any]:
+    """
+    Add new documents to the knowledge base
+    
+    Args:
+        documents: List of documents with 'content' and optional 'metadata'
+        
+    Returns:
+        Status of ingestion
+    """
+    try:
+        logger.info(f"Adding {len(documents)} documents to knowledge base")
+        
+        kb = get_knowledge_base()
+        if not kb:
+            return {
+                "status": "error",
+                "message": "Knowledge base not available",
+            }
+        
+        success = kb.ingest_documents(documents)
+        
+        return {
+            "status": "success" if success else "failed",
+            "documents_added": len(documents) if success else 0,
+            "message": "Documents ingested successfully" if success else "Failed to ingest documents",
+        }
+        
+    except Exception as e:
+        logger.error(f"Error adding knowledge: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/initialize-knowledge-base")
+async def initialize_knowledge_base() -> Dict[str, Any]:
+    """
+    Initialize knowledge base with default ML best practices
+    
+    Returns:
+        Status of initialization
+    """
+    try:
+        logger.info("Initializing knowledge base with default practices")
+        
+        kb = get_knowledge_base()
+        if not kb:
+            return {
+                "status": "error",
+                "message": "Could not initialize knowledge base",
+            }
+        
+        success = kb.add_ml_best_practices()
+        
+        return {
+            "status": "success" if success else "failed",
+            "message": "ML best practices loaded" if success else "Failed to load best practices",
+        }
+        
+    except Exception as e:
+        logger.error(f"Error initializing knowledge base: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
