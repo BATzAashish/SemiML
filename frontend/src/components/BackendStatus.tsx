@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
-import backendService from "@/services/backend";
+import backendService, { BACKEND_URL } from "@/services/backend";
 
 export default function BackendStatus() {
   const [status, setStatus] = useState<"idle" | "loading" | "connected" | "disconnected">("idle");
@@ -133,7 +133,7 @@ export default function BackendStatus() {
         {status === "connected" && (
           <Alert>
             <AlertDescription className="text-green-700">
-              ✓ Backend is running on http://localhost:8000
+              ✓ Backend is running on {BACKEND_URL}
             </AlertDescription>
           </Alert>
         )}
@@ -141,7 +141,7 @@ export default function BackendStatus() {
         {status === "disconnected" && (
           <Alert variant="destructive">
             <AlertDescription>
-              ✗ Cannot connect to backend. Make sure it's running on http://localhost:8000
+              ✗ Cannot connect to backend. Make sure it's running on {BACKEND_URL}
             </AlertDescription>
           </Alert>
         )}
