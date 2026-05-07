@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from app.config import API_TITLE, API_VERSION, API_DESCRIPTION
 from app.logging_config import logger
 
@@ -8,8 +9,16 @@ app = FastAPI(
     description=API_DESCRIPTION
 )
 
-# NOTE: Middleware is intentionally disabled to avoid middleware stack building errors
-# CORS is handled by uvicorn/nginx in production
+# Enable CORS for all origins in development mode
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=False,
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+    allow_headers=["*"],
+)
+
+# NOTE: Additional middleware is intentionally disabled to avoid middleware stack building errors
 
 # Import and register routers
 from app.routers import connection, monitoring

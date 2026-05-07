@@ -9,9 +9,11 @@ import EvaluationPage from "./pages/EvaluationPage";
 import ExplainabilityPage from "./pages/ExplainabilityPage";
 import AssistantPage from "./pages/AssistantPage";
 import ExperimentsPage from "./pages/ExperimentsPage";
+import ConnectionTestPage from "./pages/ConnectionTestPage";
 
 export const appRoutes = [
   { path: "/", label: "Dashboard", element: DashboardPage },
+  { path: "/connection-test", label: "Connection Test", element: ConnectionTestPage },
   { path: "/upload", label: "Upload", element: DatasetUploadPage },
   { path: "/data-upload-test", label: "Data Upload Test (M2)", element: DataUploadTestPage },
   { path: "/meta-features-test", label: "Meta-Features Test (M3)", element: MetaFeaturesTestPage },
